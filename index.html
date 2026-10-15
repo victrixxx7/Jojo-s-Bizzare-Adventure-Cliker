@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#100d18">
+<title>JoJo: Stand Clicker</title>
+<style>
+:root{--bg:#0b0910;--panel:#15111f;--panel2:#1d172b;--line:#342748;--text:#f5f0ff;--muted:#a99dbd;--gold:#f7c75b;--purple:#9b65ff;--pink:#ff5fb7;--green:#55e6a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#35204f 0,transparent 55%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;background:#251b35;color:var(--text);padding:11px 14px;font-weight:800;transition:.16s}button:hover{transform:translateY(-1px);filter:brightness(1.15)}button:active{transform:scale(.98)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.topbar{position:sticky;top:0;z-index:5;backdrop-filter:blur(16px);background:#0b0910dd;border-bottom:1px solid #332541;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:1.5px}.brandmark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#8f55ff,#ff4fb8);box-shadow:0 0 25px #a15aff55;font-size:22px}
+.brand small{display:block;font-size:10px;color:var(--muted);letter-spacing:3px}.resources{display:flex;gap:8px;flex-wrap:wrap}.resource{background:#1b1526;border:1px solid #3c2c50;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted)}.resource b{color:var(--gold);font-size:14px;margin-left:5px}
+.wrap{max-width:1250px;margin:auto;padding:20px}.hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,.8fr);gap:16px}
+.card{background:linear-gradient(145deg,#191322f5,#110e18f5);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 35px #0003}.maincard{padding:22px;position:relative;overflow:hidden;min-height:420px}.eyebrow{font-size:11px;font-weight:900;color:var(--pink);letter-spacing:3px;text-transform:uppercase}.title{font-size:clamp(25px,4vw,43px);line-height:1.02;margin:8px 0}.subtitle{color:var(--muted);font-size:13px;max-width:520px;line-height:1.6}.stand-stage{height:200px;display:grid;place-items:center;position:relative;isolation:isolate}.orb{position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#a45aff55,#6e36c000 68%);filter:blur(4px);z-index:-1;animation:pulse 3s infinite}.stand-figure{width:135px;height:150px;position:relative;filter:drop-shadow(0 0 25px #a46aff55);animation:float 3s ease-in-out infinite}.stand-head{position:absolute;top:5px;left:43px;width:50px;height:49px;border-radius:40% 40% 45% 45%;background:linear-gradient(135deg,#f7d4ff,#8f62ff 55%,#3a256e);border:2px solid #d9b9ff}.stand-head:before,.stand-head:after{content:"";position:absolute;top:19px;width:8px;height:4px;background:#fff;box-shadow:0 0 8px #fff}.stand-head:before{left:7px}.stand-head:after{right:7px}.stand-body{position:absolute;top:51px;left:30px;width:77px;height:78px;background:linear-gradient(130deg,#d7a9ff,#7544ca 48%,#332052);clip-path:polygon(18% 0,82% 0,100% 27%,79% 100%,22% 100%,0 27%);border:1px solid #e9d2ff}.stand-body:after{content:"";position:absolute;left:34px;top:0;height:100%;width:8px;background:#f7c75b;opacity:.8}.stand-arm{position:absolute;top:57px;width:27px;height:76px;border-radius:15px;background:linear-gradient(#d8b0ff,#6340a5)}.stand-arm.left{left:11px;transform:rotate(18deg)}.stand-arm.right{right:10px;transform:rotate(-18deg)}.stand-leg{position:absolute;top:119px;width:27px;height:31px;background:#4b2d81;border-radius:0 0 10px 10px}.stand-leg.left{left:38px}.stand-leg.right{right:36px}.stand-name{font-size:20px;font-weight:1000;text-align:center;letter-spacing:1px}.stand-rarity{text-align:center;font-size:11px;letter-spacing:2px;font-weight:1000;color:#e3c2ff;margin-top:5px}
+.clickrow{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:15px}.clickbtn{background:linear-gradient(110deg,#9254ff,#e84eb5);border:0;box-shadow:0 8px 28px #9c4dff45;min-width:190px;font-size:15px;padding:15px 20px}.clickbtn span{display:block;font-size:10px;opacity:.8;letter-spacing:1px}.sidecol{display:flex;flex-direction:column;gap:16px}.summoncard,.statscard{padding:18px}.sectiontitle{font-size:14px;font-weight:1000;letter-spacing:1px;margin:0 0 12px}.summonbuttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.summonbuttons button{padding:12px 5px;font-size:12px}.summonbuttons small{display:block;color:#c7b7dc;font-size:10px;margin-top:4px}.primary{background:linear-gradient(135deg,#6e42c8,#9e4fdb);border:0}.gold{background:linear-gradient(135deg,#9d7220,#e7b846);color:#1b1304;border:0}.chancebox{margin-top:12px;padding:10px;border-radius:12px;background:#0e0b15;border:1px solid #30213f;color:var(--muted);font-size:11px;line-height:1.6}.chancebox b{color:var(--gold)}.statline{display:flex;justify-content:space-between;border-bottom:1px solid #2b2038;padding:9px 0;font-size:12px;color:var(--muted)}.statline:last-child{border:0}.statline b{color:var(--text)}
+.nav{display:flex;gap:8px;overflow:auto;margin:20px 0 14px;padding-bottom:3px}.nav button{white-space:nowrap;background:#171220;color:#b9abc9}.nav button.active{background:#3b2456;border-color:#8d57c8;color:white;box-shadow:inset 0 -2px #d56aff}
+.page{display:none}.page.active{display:block}.pagehead{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0 16px}.pagehead h2{margin:0;font-size:25px}.pagehead p{margin:5px 0 0;color:var(--muted);font-size:12px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters input,.filters select{background:#171220;border:1px solid var(--line);color:white;border-radius:10px;padding:10px;max-width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}.standcard{padding:14px;min-height:170px;position:relative;overflow:hidden}.standcard:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--rarity,#777)}.standicon{height:64px;border-radius:12px;background:radial-gradient(circle,#ffffff12,transparent 70%),#0e0b15;display:grid;place-items:center;font-size:34px;margin-bottom:10px}.standcard h3{font-size:13px;margin:0 0 5px}.tag{display:inline-block;font-size:9px;font-weight:1000;letter-spacing:1px;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:#ffffff12;color:var(--rarity,#aaa)}.standcard p{font-size:11px;color:var(--muted);margin:8px 0}.standcard button{width:100%;font-size:11px;padding:8px;margin-top:5px}.locked .standicon{filter:grayscale(1);opacity:.55}.locked h3{color:#887b98}.progress{height:8px;background:#2a2036;border-radius:10px;overflow:hidden;margin:10px 0}.progress div{height:100%;background:linear-gradient(90deg,#9455ff,#ed63bb);width:0%;transition:width .3s}.empty{padding:40px;text-align:center;color:var(--muted);border:1px dashed #443351;border-radius:16px;grid-column:1/-1}
+.upgradegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.upgrade{padding:17px}.upgrade .big{font-size:28px;margin:8px 0}.upgrade p{font-size:12px;color:var(--muted);line-height:1.5;min-height:35px}.upgrade button{width:100%}
+.quest{padding:15px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:10px}.quest p{margin:5px 0;color:var(--muted);font-size:12px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#241832;border:1px solid #76529a;padding:12px 18px;border-radius:12px;z-index:20;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 30px #0008;font-size:13px;font-weight:800}.toast.show{opacity:1;transform:translate(-50%,0)}.modalback{position:fixed;inset:0;background:#050309d9;backdrop-filter:blur(8px);z-index:30;display:none;place-items:center;padding:20px}.modalback.show{display:grid}.modal{max-width:520px;width:100%;padding:24px;text-align:center;animation:pop .25s ease-out}.modal .bigstand{font-size:70px;margin:15px}.modal h2{font-size:28px;margin:5px}.modal p{color:var(--muted);font-size:13px}.modal .resultlist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:15px 0}.resultpill{padding:7px 9px;border:1px solid var(--rarity);color:var(--rarity);border-radius:8px;font-size:10px;font-weight:900}
+.footer{text-align:center;color:#665975;font-size:10px;padding:25px 10px}.danger{background:#351721;border-color:#733346}.tiny{font-size:10px;color:var(--muted)}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}@keyframes pulse{0%,100%{transform:scale(.9);opacity:.65}50%{transform:scale(1.1);opacity:1}}@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+@media(max-width:780px){.wrap{padding:12px}.hero{grid-template-columns:1fr}.maincard{min-height:390px;padding:17px}.stand-stage{height:175px}.sidecol{display:grid;grid-template-columns:1fr}.topbar{padding:10px}.resources{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.resource{text-align:center;padding:7px 4px}.resource b{display:block;margin:3px 0 0}.brand{font-size:13px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.standcard{padding:10px}.summonbuttons{gap:6px}.summonbuttons button{font-size:11px}.nav button{padding:10px 12px}.pagehead h2{font-size:22px}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}.title{font-size:27px}.clickbtn{width:100%}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brandmark">✦</div><div>JOJO: STAND CLICKER<small>DESTINY IS IN YOUR HANDS</small></div></div>
+  <div class="resources">
+    <div class="resource">⚡ ENERGY <b id="energy">0</b></div>
+    <div class="resource">◆ COINS <b id="coins">0</b></div>
+    <div class="resource">✧ SHARDS <b id="shards">0</b></div>
+  </div>
+</header>
+<main class="wrap">
+<section class="hero">
+  <div class="card maincard">
+    <div class="eyebrow">STAND USER // AWAKENING</div>
+    <h1 class="title">Your destiny<br>is calling.</h1>
+    <p class="subtitle">Clique para acumular energia, invoque Stands e complete seu índice. Cada destino começa com um único clique.</p>
+    <div class="stand-stage"><div class="orb"></div><div class="stand-figure" id="standFigure"><div class="stand-arm left"></div><div class="stand-arm right"></div><div class="stand-head"></div><div class="stand-body"></div><div class="stand-leg left"></div><div class="stand-leg right"></div></div></div>
+    <div class="stand-name" id="equippedName">Stand ainda não equipado</div><div class="stand-rarity" id="equippedRarity">INVOQUE SEU DESTINO</div>
+    <div class="clickrow"><button class="clickbtn" id="clickButton">⚡ GATHER ENERGY <span>+<span id="clickGain">1</span> ENERGY / CLICK</span></button></div>
+  </div>
+  <div class="sidecol">
+    <div class="card summoncard">
+      <h3 class="sectiontitle">✦ STAND SUMMON</h3>
+      <div class="summonbuttons">
+        <button class="primary" data-summon="1">SUMMON ×1<small id="cost1">100 ⚡</small></button>
+        <button data-summon="10">SUMMON ×10<small id="cost10">1K ⚡</small></button>
+        <button data-summon="100" id="summon100" disabled>SUMMON ×100<small>Unlock later</small></button>
+      </div>
+      <div class="chancebox">✨ <b>RNG RATES</b><br>Legendary <b>5%</b> · Mythic <b>2.5%</b><br>Divine <b>1%</b> · Celestial <b>0.4%</b> · Secret <b>0.1%</b><br><span id="pityText">Mythic pity: 0 / 500</span></div>
+    </div>
+    <div class="card statscard">
+      <h3 class="sectiontitle">◈ YOUR PROGRESS</h3>
+      <div class="statline"><span>Unique Stands</span><b id="uniqueCount">0 / 18</b></div>
+      <div class="progress"><div id="collectionBar"></div></div>
+      <div class="statline"><span>Total summons</span><b id="summonCount">0</b></div>
+      <div class="statline"><span>Click power</span><b id="powerStat">1</b></div>
+      <div class="statline"><span>Auto energy / sec</span><b id="autoStat">0</b></div>
+      <div class="statline"><span>Current Rebirths</span><b id="rebirthStat">0</b></div>
+    </div>
+  </div>
+</section>
+
+<nav class="nav" id="nav">
+<button class="active" data-page="home">✦ Home</button><button data-page="inventory">▦ Inventory</button><button data-page="catalog">◈ Stand Index</button><button data-page="upgrades">↑ Upgrades</button><button data-page="quests">☷ Quests</button><button data-page="settings">⚙ Settings</button>
+</nav>
+
+<section class="page active" id="page-home">
+ <div class="card" style="padding:17px"><div class="eyebrow">LATEST SUMMONS</div><h2 style="margin:7px 0 12px">Fate's last hand</h2><div id="recentResults" class="resultlist"><span class="tiny">Suas invocações recentes aparecerão aqui.</span></div></div>
+</section>
+<section class="page" id="page-inventory">
+ <div class="pagehead"><div><h2>▦ Inventory</h2><p>Seus Stands e cópias. Equipe até 3 Stands.</p></div><div class="filters"><input id="inventorySearch" placeholder="Buscar Stand..."><select id="inventorySort"><option value="rarity">Raridade</option><option value="power">Poder</option><option value="name">Nome</option><option value="count">Quantidade</option></select></div></div>
+ <div class="grid" id="inventoryGrid"></div>
+</section>
+<section class="page" id="page-catalog">
+ <div class="pagehead"><div><h2>◈ Stand Index</h2><p>Descubra cada Stand. As silhuetas guardam segredos.</p></div><div class="filters"><input id="catalogSearch" placeholder="Buscar no catálogo..."><select id="catalogRarity"><option value="all">Todas as raridades</option></select></div></div>
+ <div class="card" style="padding:15px;margin-bottom:14px"><div style="display:flex;justify-content:space-between;gap:8px"><b>CATALOG COMPLETION</b><b id="catalogPercent">0%</b></div><div class="progress"><div id="catalogBar"></div></div></div>
+ <div class="grid" id="catalogGrid"></div>
+</section>
+<section class="page" id="page-upgrades">
+ <div class="pagehead"><div><h2>↑ Upgrades</h2><p>Invista suas moedas e transforme cada clique em poder.</p></div></div><div class="upgradegrid" id="upgradeGrid"></div>
+</section>
+<section class="page" id="page-quests">
+ <div class="pagehead"><div><h2>☷ Quests & Achievements</h2><p>O destino favorece quem tem objetivos.</p></div></div><div id="questList"></div>
+</section>
+<section class="page" id="page-settings">
+ <div class="pagehead"><div><h2>⚙ Settings & Save</h2><p>Seu progresso fica salvo neste navegador.</p></div></div>
+ <div class="card" style="padding:18px;max-width:650px">
+  <h3 class="sectiontitle">SAVE MANAGEMENT</h3><p class="subtitle">O progresso é armazenado localmente neste dispositivo. Use exportação para guardar uma cópia ou transferir o save para outro navegador.</p>
+  <div class="clickrow" style="justify-content:flex-start"><button class="primary" id="exportSave">Exportar save</button><button id="importSaveBtn">Importar save</button><input type="file" id="importSaveFile" accept=".json,application/json" hidden><button class="danger" id="resetSave">Resetar jogo</button></div>
+  <p class="tiny" style="margin-top:15px">Protótipo inicial: sem conta online ou sincronização entre dispositivos.</p>
+ </div>
+</section>
+<div class="footer">JOJO: STAND CLICKER · PROTÓTIPO JOGÁVEL · FEITO PARA O NAVEGADOR</div>
+</main>
+<div class="toast" id="toast"></div>
+<div class="modalback" id="modalback"><div class="card modal"><div class="eyebrow" id="modalEyebrow">STAND AWAKENED</div><div class="bigstand" id="modalIcon">✦</div><h2 id="modalName">Stand Name</h2><div class="stand-rarity" id="modalRarity"></div><p id="modalDesc"></p><div id="modalResults" class="resultlist"></div><button class="primary" id="closeModal">CONTINUE</button></div></div>
+<script>
+const RARITIES = [
+ {id:"Common",chance:40,color:"#a6a0b2",shards:1},
+ {id:"Uncommon",chance:25,color:"#55e6a5",shards:2},
+ {id:"Rare",chance:16,color:"#61a8ff",shards:5},
+ {id:"Epic",chance:10,color:"#bb79ff",shards:12},
+ {id:"Legendary",chance:5,color:"#f7c75b",shards:30},
+ {id:"Mythic",chance:2.5,color:"#ff5c78",shards:80},
+ {id:"Divine",chance:1,color:"#ff78cf",shards:200},
+ {id:"Celestial",chance:.4,color:"#5deaff",shards:500},
+ {id:"Secret",chance:.1,color:"#d9c8ff",shards:1500}
+];
+const STANDS = [
+ {id:"hermit_purple",name:"Hermit Purple",rarity:"Common",icon:"〰",power:8,speed:15,precision:25,desc:"Vinhas psíquicas e percepção à distância.",passive:1},
+ {id:"mister_president",name:"Mr. President",rarity:"Common",icon:"🔑",power:12,speed:18,precision:22,desc:"Um espaço de bolso inesperadamente útil.",passive:1.02},
+ {id:"love_deluxe",name:"Love Deluxe",rarity:"Common",icon:"♧",power:15,speed:18,precision:20,desc:"Cabelos com vontade própria.",passive:1.03},
+ {id:"surface",name:"Surface",rarity:"Uncommon",icon:"🪞",power:22,speed:25,precision:32,desc:"Imitação e truques de aparência.",passive:1.05},
+ {id:"the_hand",name:"The Hand",rarity:"Uncommon",icon:"✋",power:38,speed:21,precision:18,desc:"Apaga o espaço com um golpe.",passive:1.07},
+ {id:"bad_company",name:"Bad Company",rarity:"Uncommon",icon:"▦",power:28,speed:40,precision:35,desc:"Um pequeno exército disciplinado.",passive:1.08},
+ {id:"silver_chariot",name:"Silver Chariot",rarity:"Rare",icon:"⚔",power:52,speed:88,precision:75,desc:"Espadachim veloz e preciso.",passive:1.12},
+ {id:"magicians_red",name:"Magician's Red",rarity:"Rare",icon:"🔥",power:68,speed:54,precision:61,desc:"Manipula chamas com precisão.",passive:1.14},
+ {id:"hierophant_green",name:"Hierophant Green",rarity:"Rare",icon:"✳",power:50,speed:62,precision:78,desc:"Ataques de longo alcance.",passive:1.13},
+ {id:"sticky_fingers",name:"Sticky Fingers",rarity:"Epic",icon:"⚡",power:76,speed:80,precision:72,desc:"Zíperes abrem caminhos impossíveis.",passive:1.18},
+ {id:" okuyasu",name:"Aerosmith",rarity:"Epic",icon:"✈",power:74,speed:84,precision:65,desc:"Pequeno avião de combate.",passive:1.19},
+ {id:"white_snake",name:"Whitesnake",rarity:"Epic",icon:"◉",power:79,speed:66,precision:84,desc:"Manipula memórias e discos.",passive:1.2},
+ {id:"star_platinum",name:"Star Platinum",rarity:"Legendary",icon:"✦",power:95,speed:98,precision:92,desc:"Força e precisão extraordinárias.",passive:1.28},
+ {id:"killer_queen",name:"Killer Queen",rarity:"Legendary",icon:"♛",power:91,speed:77,precision:90,desc:"Transforma objetos em bombas.",passive:1.3},
+ {id:"crazy_diamond",name:"Crazy Diamond",rarity:"Legendary",icon:"♦",power:93,speed:89,precision:88,desc:"Força poderosa e restauração.",passive:1.29},
+ {id:"the_world",name:"The World",rarity:"Mythic",icon:"⌛",power:99,speed:99,precision:91,desc:"Um poder capaz de interromper o tempo.",passive:1.42},
+ {id:"king_crimson",name:"King Crimson",rarity:"Mythic",icon:"◈",power:97,speed:95,precision:87,desc:"Apaga intervalos de tempo.",passive:1.45},
+ {id:"gold_experience",name:"Gold Experience",rarity:"Mythic",icon:"☀",power:92,speed:90,precision:96,desc:"Dá vida ao que toca.",passive:1.43},
+ {id:"stone_free",name:"Stone Free",rarity:"Divine",icon:"🕸",power:94,speed:93,precision:95,desc:"Transforma o corpo em fios.",passive:1.6},
+ {id:"made_in_heaven",name:"Made in Heaven",rarity:"Divine",icon:"⏱",power:98,speed:100,precision:96,desc:"Aceleração além dos limites.",passive:1.7},
+ {id:"tusk_act4",name:"Tusk ACT 4",rarity:"Celestial",icon:"🌀",power:100,speed:94,precision:99,desc:"Rotação infinita e poder colossal.",passive:2.0},
+ {id:"d4c_love_train",name:"D4C: Love Train",rarity:"Celestial",icon:"♢",power:99,speed:97,precision:98,desc:"Redireciona o infortúnio.",passive:2.1},
+ {id:"wonder_of_u",name:"Wonder of U",rarity:"Secret",icon:"☂",power:100,speed:100,precision:100,desc:"A calamidade persegue quem o enfrenta.",passive:3.0},
+ {id:"gold_experience_requiem",name:"Gold Experience Requiem",rarity:"Secret",icon:"✺",power:100,speed:100,precision:100,desc:"O destino retorna ao zero.",passive:3.2}
+];
+// Fix a deliberately harmless whitespace typo in one demonstration ID before validation/use.
+STANDS.find(s=>s.name==="Aerosmith").id="aerosmith";
+const DEFAULT = {version:1,energy:0,coins:0,shards:0,clickPower:1,autoLevel:0,luckLevel:0,discountLevel:0,rebirths:0,totalClicks:0,totalSummons:0,mythicPity:0,legendaryPity:0,inventory:{},discovered:[],equipped:[],questsClaimed:[],lastSeen:Date.now()};
+let state = loadState();
+let toastTimer;
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.floor(n).toLocaleString("pt-BR");
+const rarity=id=>RARITIES.find(r=>r.id===id)||RARITIES[0];
+const stand=id=>STANDS.find(s=>s.id===id);
+function cloneDefault(){return JSON.parse(JSON.stringify(DEFAULT))}
+function loadState(){
+ try{const raw=localStorage.getItem("jojoStandClickerSaveV1");if(!raw)return cloneDefault();const d=JSON.parse(raw);const s={...cloneDefault(),...d};s.inventory=s.inventory||{};s.discovered=s.discovered||[];s.equipped=s.equipped||[];s.questsClaimed=s.questsClaimed||[];return s}catch(e){return cloneDefault()}
+}
+function save(){try{state.lastSeen=Date.now();localStorage.setItem("jojoStandClickerSaveV1",JSON.stringify(state))}catch(e){toast("Não foi possível salvar neste navegador.")}}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2300)}
+function passiveMultiplier(){return state.equipped.reduce((m,id)=>m*(stand(id)?.passive||1),1)}
+function luckMultiplier(){return 1+state.luckLevel*.08}
+function clickGain(){return Math.max(1,Math.floor(state.clickPower*passiveMultiplier()*(1+state.rebirths*.2)))}
+function autoGain(){return state.autoLevel*clickGain()}
+function formatCost(n){if(n>=1e6)return (n/1e6).toFixed(1)+"M";if(n>=1e3)return (n/1e3).toFixed(1)+"K";return fmt(n)}
+function updateUI(){
+ $("energy").textContent=fmt(state.energy);$("coins").textContent=fmt(state.coins);$("shards").textContent=fmt(state.shards);
+ $("clickGain").textContent=fmt(clickGain());$("powerStat").textContent=fmt(clickGain());$("autoStat").textContent=fmt(autoGain());$("rebirthStat").textContent=state.rebirths;
+ $("uniqueCount").textContent=`${state.discovered.length} / ${STANDS.length}`;$("collectionBar").style.width=(state.discovered.length/STANDS.length*100)+"%";
+ $("summonCount").textContent=fmt(state.totalSummons);$("pityText").textContent=`Mythic pity: ${state.mythicPity} / 500 · Legendary pity: ${state.legendaryPity} / 150`;
+ $("cost1").textContent=formatCost(summonCost(1))+" ⚡";$("cost10").textContent=formatCost(summonCost(10))+" ⚡";
+ $("summon100").disabled=state.discovered.length<10;
+ $("summon100").innerHTML=state.discovered.length<10?'SUMMON ×100<small>Unlock at 10 discoveries</small>':'SUMMON ×100<small>'+formatCost(summonCost(100))+' ⚡</small>';
+ const eq=stand(state.equipped[0]);$("equippedName").textContent=eq?eq.name:"Stand ainda não equipado";$("equippedRarity").textContent=eq?eq.rarity.toUpperCase()+" STAND":"INVOQUE SEU DESTINO";
+ document.querySelector(".stand-figure").style.filter=eq?`drop-shadow(0 0 25px ${rarity(eq.rarity).color}88)`:"drop-shadow(0 0 25px #a46aff55)";
+ renderRecent();renderInventory();renderCatalog();renderUpgrades();renderQuests();
+}
+function summonCost(n){return Math.floor(100*n*(1-state.discountLevel*.03))}
+function clickEnergy(){const gain=clickGain();state.energy+=gain;state.totalClicks++;if(state.totalClicks%10===0)state.coins+=1;save();updateUI();const b=$("clickButton");b.animate([{transform:"scale(1)"},{transform:"scale(.96)"},{transform:"scale(1)"}],{duration:130});}
+$("clickButton").addEventListener("click",clickEnergy);
+function weightedRarity(){
+ let pool=RARITIES.map(r=>({...r,chance:r.chance}));
+ // Luck modestly boosts rarities above Common, then probabilities are normalized.
+ pool=pool.map((r,i)=>({...r,chance:i===0?r.chance: r.chance*Math.pow(luckMultiplier(),i*.7)}));
+ const total=pool.reduce((a,r)=>a+r.chance,0);let roll=Math.random()*total;
+ for(const r of pool){roll-=r.chance;if(roll<=0)return r.id}return "Common";
+}
+function chooseStand(r){const list=STANDS.filter(s=>s.rarity===r);return list[Math.floor(Math.random()*list.length)]}
+function rollStand(){
+ let r=weightedRarity();
+ if(state.legendaryPity>=149 && !["Legendary","Mythic","Divine","Celestial","Secret"].includes(r))r="Legendary";
+ if(state.mythicPity>=499 && !["Mythic","Divine","Celestial","Secret"].includes(r))r="Mythic";
+ let s=chooseStand(r);if(!s){s=chooseStand("Common")}
+ state.totalSummons++;state.legendaryPity=["Legendary","Mythic","Divine","Celestial","Secret"].includes(s.rarity)?0:state.legendaryPity+1;
+ state.mythicPity=["Mythic","Divine","Celestial","Secret"].includes(s.rarity)?0:state.mythicPity+1;
+ const fresh=!state.discovered.includes(s.id);if(fresh)state.discovered.push(s.id);
+ state.inventory[s.id]=(state.inventory[s.id]||0)+1;
+ if(!fresh)state.shards+=rarity(s.rarity).shards;
+ state.coins+=Math.max(1,Math.floor(rarity(s.rarity).shards/2));
+ return {stand:s,fresh};
+}
+function summon(n){
+ const cost=summonCost(n);if(state.energy<cost){toast("Energia insuficiente. Continue clicando!");return}
+ if(n===100&&state.discovered.length<10){toast("Descubra 10 Stands para desbloquear x100.");return}
+ state.energy-=cost;const results=[];for(let i=0;i<n;i++)results.push(rollStand());
+ save();updateUI();showResults(results);
+}
+document.querySelectorAll("[data-summon]").forEach(b=>b.addEventListener("click",()=>summon(Number(b.dataset.summon))));
+function showResults(results){
+ const rarest=results.slice().sort((a,b)=>RARITIES.findIndex(r=>r.id===b.stand.rarity)-RARITIES.findIndex(r=>r.id===a.stand.rarity))[0];
+ const many=results.length>1;$("modalEyebrow").textContent=many?`${results.length} STANDS SUMMONED`:(results[0].fresh?"NEW DISCOVERY":"STAND OBTAINED");
+ $("modalIcon").textContent=many?"✦":rarest.stand.icon;$("modalName").textContent=many?`${results.filter(r=>r.fresh).length} new discoveries` : rarest.stand.name;
+ $("modalRarity").textContent=many?"BEST RESULT: "+rarest.stand.rarity.toUpperCase():rarest.stand.rarity.toUpperCase();
+ $("modalRarity").style.color=rarity(rarest.stand.rarity).color;
+ $("modalDesc").textContent=many?`Você obteve ${results.length} Stands. Confira os resultados abaixo.`:rarest.stand.desc+(rarest.fresh?" · Entrada adicionada ao catálogo!":` · Repetido: +${rarity(rarest.stand.rarity).shards} shards`);
+ const list=$("modalResults");list.innerHTML="";const shown=many?results.slice(0,30):[];
+ shown.forEach(r=>{const pill=document.createElement("span");pill.className="resultpill";pill.style.setProperty("--rarity",rarity(r.stand.rarity).color);pill.textContent=r.stand.name+(r.fresh?" ★":"");list.appendChild(pill)});
+ if(many&&results.length>30){const p=document.createElement("span");p.className="tiny";p.textContent=`e mais ${results.length-30} resultados`;list.appendChild(p)}
+ $("modalback").classList.add("show");
+}
+$("closeModal").addEventListener("click",()=>$("modalback").classList.remove("show"));
+$("modalback").addEventListener("click",e=>{if(e.target===$("modalback"))$("modalback").classList.remove("show")});
+function switchPage(p){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+p));document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===p));}
+$("nav").addEventListener("click",e=>{const b=e.target.closest("button[data-page]");if(b)switchPage(b.dataset.page)});
+function cardHTML(s,owned,qty,locked=false){
+ const r=rarity(s.rarity);return `<article class="card standcard ${locked?"locked":""}" style="--rarity:${r.color}"><div class="standicon">${locked?"?":s.icon}</div><h3>${locked?"Unknown Stand":s.name}</h3><span class="tag">${locked?r.id:s.rarity}</span><p>${locked?"Ainda não descoberto":`PWR ${s.power} · SPD ${s.speed} · PRC ${s.precision}`}<br>${owned?`Cópias: ${qty}`:""}</p>${owned?`<button class="${state.equipped.includes(s.id)?"gold":"primary"}" data-equip="${s.id}">${state.equipped.includes(s.id)?"✓ Equipado":"Equipar Stand"}</button>`:""}</article>`
+}
+function renderInventory(){
+ const grid=$("inventoryGrid");const q=($("inventorySearch")?.value||"").toLowerCase();const sort=$("inventorySort")?.value||"rarity";
+ let items=Object.keys(state.inventory).map(id=>({s:stand(id),qty:state.inventory[id]})).filter(x=>x.s&&x.qty>0&&x.s.name.toLowerCase().includes(q));
+ items.sort((a,b)=>sort==="name"?a.s.name.localeCompare(b.s.name):sort==="power"?b.s.power-a.s.power:sort==="count"?b.qty-a.qty:RARITIES.findIndex(r=>r.id===b.s.rarity)-RARITIES.findIndex(r=>r.id===a.s.rarity));
+ grid.innerHTML=items.length?items.map(x=>cardHTML(x.s,true,x.qty)).join(""):`<div class="empty">Seu inventário está vazio.<br>Faça sua primeira invocação e encontre seu Stand.</div>`;
+}
+function renderCatalog(){
+ const grid=$("catalogGrid"),q=($("catalogSearch")?.value||"").toLowerCase(),r=$("catalogRarity")?.value||"all";
+ const list=STANDS.filter(s=>(r==="all"||s.rarity===r)&&(s.name.toLowerCase().includes(q)||(!state.discovered.includes(s.id)&&q==="")));
+ grid.innerHTML=list.map(s=>{const got=state.discovered.includes(s.id);return cardHTML(s,got,state.inventory[s.id]||0,!got)}).join("");
+ const p=Math.round(state.discovered.length/STANDS.length*100);$("catalogPercent").textContent=p+"%";$("catalogBar").style.width=p+"%";
+}
+function renderUpgrades(){
+ const items=[
+ {id:"clickPower",name:"Click Power",icon:"⚡",desc:"Aumenta a energia recebida por clique.",level:state.clickPower-1,cost:()=>Math.floor(50*Math.pow(1.7,state.clickPower-1)),buy:()=>{state.clickPower++;}},
+ {id:"autoLevel",name:"Auto Click",icon:"⏱",desc:"Gera energia automaticamente a cada segundo.",level:state.autoLevel,cost:()=>Math.floor(150*Math.pow(1.85,state.autoLevel)),buy:()=>{state.autoLevel++;}},
+ {id:"luckLevel",name:"Lucky Arrow",icon:"🍀",desc:"Melhora moderadamente as chances de raridades altas.",level:state.luckLevel,cost:()=>Math.floor(300*Math.pow(2,state.luckLevel)),buy:()=>{state.luckLevel++;}},
+ {id:"discountLevel",name:"Summon Discount",icon:"◆",desc:"Reduz o custo de invocações em 3% por nível, até 30%.",level:state.discountLevel,cost:()=>Math.floor(500*Math.pow(2,state.discountLevel)),buy:()=>{state.discountLevel++;}}
+ ];
+ $("upgradeGrid").innerHTML=items.map(x=>`<article class="card upgrade"><div class="eyebrow">UPGRADE // LV. ${x.level}</div><div class="big">${x.icon}</div><h3>${x.name}</h3><p>${x.desc}</p><div class="statline"><span>Próximo nível</span><b>${x.level+1}</b></div><button class="primary" data-upgrade="${x.id}">Comprar · ${formatCost(x.cost())} ◆</button></article>`).join("");
+}
+function buyUpgrade(id){
+ const map={
+ clickPower:{cost:()=>Math.floor(50*Math.pow(1.7,state.clickPower-1)),buy:()=>state.clickPower++},
+ autoLevel:{cost:()=>Math.floor(150*Math.pow(1.85,state.autoLevel)),buy:()=>state.autoLevel++},
+ luckLevel:{cost:()=>Math.floor(300*Math.pow(2,state.luckLevel)),buy:()=>state.luckLevel++},
+ discountLevel:{cost:()=>Math.floor(500*Math.pow(2,state.discountLevel)),buy:()=>{if(state.discountLevel>=10){toast("Desconto máximo alcançado.");return false}state.discountLevel++}}
+ };const u=map[id];if(!u)return;const c=u.cost();if(state.coins<c){toast("Moedas insuficientes.");return}const result=u.buy();if(result===false)return;state.coins-=c;save();updateUI();toast("Upgrade comprado!");
+}
+$("upgradeGrid").addEventListener("click",e=>{const b=e.target.closest("[data-upgrade]");if(b)buyUpgrade(b.dataset.upgrade)});
+function renderQuests(){
+ const quests=[
+ {id:"clicks100",title:"Awakening",desc:"Clique 100 vezes.",progress:Math.min(state.totalClicks,100),goal:100,reward:100},
+ {id:"summon10",title:"Fate Spinner",desc:"Realize 10 invocações.",progress:Math.min(state.totalSummons,10),goal:10,reward:150},
+ {id:"discover5",title:"Collector",desc:"Descubra 5 Stands únicos.",progress:Math.min(state.discovered.length,5),goal:5,reward:250},
+ {id:"discover10",title:"Stand Encyclopedia",desc:"Descubra 10 Stands únicos.",progress:Math.min(state.discovered.length,10),goal:10,reward:500}
+ ];
+ $("questList").innerHTML=quests.map(q=>`<article class="card quest"><div><b>${q.title}</b><p>${q.desc} · ${q.progress}/${q.goal}</p><div class="progress"><div style="width:${q.progress/q.goal*100}%"></div></div></div><button class="${state.questsClaimed.includes(q.id)?"":"primary"}" data-quest="${q.id}" ${state.questsClaimed.includes(q.id)||q.progress<q.goal?"disabled":""}>${state.questsClaimed.includes(q.id)?"Resgatado":"Resgatar · "+q.reward+" ◆"}</button></article>`).join("");
+}
+$("questList").addEventListener("click",e=>{const b=e.target.closest("[data-quest]");if(!b)return;const id=b.dataset.quest;if(state.questsClaimed.includes(id))return;const rewards={clicks100:100,summon10:150,discover5:250,discover10:500};const valid={clicks100:state.totalClicks>=100,summon10:state.totalSummons>=10,discover5:state.discovered.length>=5,discover10:state.discovered.length>=10};if(!valid[id])return;state.questsClaimed.push(id);state.coins+=rewards[id];save();updateUI();toast("Missão resgatada! +"+rewards[id]+" coins")});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-equip]");if(!b)return;const id=b.dataset.equip;if(!state.inventory[id])return;if(state.equipped.includes(id)){state.equipped=state.equipped.filter(x=>x!==id);toast("Stand desequipado.");}else{if(state.equipped.length>=3){state.equipped.shift()}state.equipped.push(id);toast(stand(id).name+" equipado!")}save();updateUI()});
+["inventorySearch","inventorySort","catalogSearch","catalogRarity"].forEach(id=>$(id).addEventListener("input",()=>{renderInventory();renderCatalog()}));
+RARITIES.forEach(r=>{const o=document.createElement("option");o.value=r.id;o.textContent=r.id;$("catalogRarity").appendChild(o)});
+function renderRecent(){
+ const recent=$("recentResults");const arr=state._recent||[];if(!arr.length){recent.innerHTML='<span class="tiny">Suas invocações recentes aparecerão aqui.</span>';return}
+ recent.innerHTML=arr.slice(0,8).map(x=>`<span class="resultpill" style="--rarity:${rarity(x.rarity).color}">${x.name}</span>`).join("");
+}
+const oldRollStand=rollStand;
+rollStand=function(){const r=oldRollStand();state._recent=state._recent||[];state._recent.unshift({name:r.stand.name,rarity:r.stand.rarity});state._recent=state._recent.slice(0,8);return r};
+$("exportSave").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="jojo-stand-clicker-save.json";a.click();URL.revokeObjectURL(a.href);toast("Save exportado.")});
+$("importSaveBtn").addEventListener("click",()=>$("importSaveFile").click());
+$("importSaveFile").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(typeof d!=="object"||!d||!d.inventory||!Array.isArray(d.discovered))throw Error("Formato inválido");const fresh=cloneDefault();state={...fresh,...d};state.inventory=state.inventory||{};state.discovered=state.discovered.filter(id=>!!stand(id));state.equipped=(state.equipped||[]).filter(id=>state.inventory[id]&&stand(id)).slice(0,3);save();updateUI();toast("Save importado!")}catch(err){toast("Arquivo de save inválido.")}e.target.value=""});
+$("resetSave").addEventListener("click",()=>{if(confirm("Tem certeza? Todo o progresso salvo neste navegador será apagado.")){state=cloneDefault();save();updateUI();toast("Progresso reiniciado.")}});
+setInterval(()=>{const g=autoGain();if(g>0){state.energy+=g;updateUI()}},1000);
+setInterval(save,10000);
+window.addEventListener("beforeunload",save);
+updateUI();
+</script>
+</body>
+</html>
