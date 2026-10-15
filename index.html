@@ -70,7 +70,7 @@ textarea{font:12px ui-monospace,monospace;resize:vertical}.world-card,.lore-card
 </section>
 
 <nav class="nav" id="nav">
-<button class="active" data-page="home">✦ Home</button><button data-page="inventory">▦ Inventory</button><button data-page="catalog">◈ Stand Index</button><button data-page="upgrades">↑ Upgrades</button><button data-page="quests">☷ Quests</button><button data-page="bosses" id="bossNav" hidden>⚔ Bosses</button><button data-page="evolution" id="evolutionNav" hidden>✨ Evolutions</button><button data-page="shardshop" id="shardShopNav" hidden>💎 Fragmentos</button><button data-page="worlds">🌍 Mundos</button><button data-page="combat">⚔ Arena</button><button data-page="gear">🎒 Equipamentos</button><button data-page="tower">🗼 Torre</button><button data-page="pvp">🥊 X1</button><button data-page="clans">🏰 Clãs</button><button data-page="archive">📜 Destino</button><button data-page="settings">⚙ Settings</button>
+<button class="active" data-page="home">✦ Home</button><button data-page="inventory">▦ Inventory</button><button data-page="catalog">◈ Stand Index</button><button data-page="upgrades">↑ Upgrades</button><button data-page="quests">☷ Quests</button><button data-page="bosses" id="bossNav">⚔ Bosses</button><button data-page="evolution" id="evolutionNav" hidden>✨ Evolutions</button><button data-page="shardshop" id="shardShopNav" hidden>💎 Fragmentos</button><button data-page="worlds">🌍 Mundos</button><button data-page="combat">⚔ Arena</button><button data-page="gear">🎒 Equipamentos</button><button data-page="tower">🗼 Torre</button><button data-page="pvp">🥊 X1</button><button data-page="clans">🏰 Clãs</button><button data-page="archive">📜 Destino</button><button data-page="settings">⚙ Settings</button>
 </nav>
 
 <section class="page active" id="page-home">
@@ -94,7 +94,7 @@ textarea{font:12px ui-monospace,monospace;resize:vertical}.world-card,.lore-card
  <div class="pagehead"><div><h2>☷ Quests & Achievements</h2><p>O destino favorece quem tem objetivos.</p></div></div><div id="questList"></div>
 </section>
 <section class="page" id="page-bosses">
- <div class="pagehead"><div><h2>⚔ Boss Rush</h2><p>Derrote inimigos lendários para ganhar moedas e fragmentos. Desbloqueado após seu primeiro Rebirth.</p></div></div><div class="grid" id="bossGrid"></div>
+ <div class="pagehead"><div><h2>⚔ Boss Rush</h2><p>Derrote inimigos lendários para ganhar moedas e fragmentos. Os chefes aparecem desde o início; cada um exige Rebirth e energia específicos.</p></div></div><div class="grid" id="bossGrid"></div>
 </section>
 <section class="page" id="page-evolution">
  <div class="pagehead"><div><h2>✨ Stand Evolution</h2><p>Use fragmentos para fortalecer permanentemente um Stand do seu inventário. Desbloqueado após seu primeiro Rebirth.</p></div></div>
@@ -185,7 +185,7 @@ function clickGain(){let ev=typeof activeEvent==="function"?activeEvent().id:"";
 function autoGain(){return state.autoLevel*clickGain()}
 function formatCost(n){if(n>=1e6)return (n/1e6).toFixed(1)+"M";if(n>=1e3)return (n/1e3).toFixed(1)+"K";return fmt(n)}
 function updateUI(){
- $("bossNav").hidden=state.rebirths<1;$("evolutionNav").hidden=state.rebirths<1;$("shardShopNav").hidden=state.rebirths<1;
+$("evolutionNav").hidden=state.rebirths<1;$("shardShopNav").hidden=state.rebirths<1;
  $("energy").textContent=fmt(state.energy);$("coins").textContent=fmt(state.coins);$("shards").textContent=fmt(state.shards);
  $("clickGain").textContent=fmt(clickGain());$("powerStat").textContent=fmt(clickGain());$("autoStat").textContent=fmt(autoGain());$("rebirthStat").textContent=state.rebirths;
  $("uniqueCount").textContent=`${state.discovered.length} / ${STANDS.length}`;$("collectionBar").style.width=(state.discovered.length/STANDS.length*100)+"%";
@@ -195,7 +195,7 @@ function updateUI(){
  $("summon100").innerHTML=state.discovered.length<10?'SUMMON ×100<small>Unlock at 10 discoveries</small>':'SUMMON ×100<small>'+formatCost(summonCost(100))+' ⚡</small>';
  const eq=stand(state.equipped[0]);$("equippedName").textContent=eq?eq.name:"Stand ainda não equipado";$("equippedRarity").textContent=eq?eq.rarity.toUpperCase()+" STAND":"INVOQUE SEU DESTINO";
  document.querySelector(".stand-figure").style.filter=eq?`drop-shadow(0 0 25px ${rarity(eq.rarity).color}88)`:"drop-shadow(0 0 25px #a46aff55)";
- renderRecent();renderInventory();renderCatalog();renderUpgrades();renderQuests();renderRebirth();if(state.rebirths>=1){renderBosses();renderEvolutions();renderShardShop();renderRequiem()}renderWorlds();renderGear();renderFusion();renderTower();renderClan();renderArchive();renderCombat();renderEvent();
+ renderRecent();renderInventory();renderCatalog();renderUpgrades();renderQuests();renderRebirth();renderBosses();if(state.rebirths>=1){renderEvolutions();renderShardShop();renderRequiem()}renderWorlds();renderGear();renderFusion();renderTower();renderClan();renderArchive();renderCombat();renderEvent();
 }
 function rebirthRequirements(){const r=Math.max(0,Math.min(Number(state.rebirths)||0,20));return {energy:Math.floor(1000000*Math.pow(2,r)),coins:Math.floor(10000*Math.pow(1.8,r)),shards:250+Math.min(r,100)*100}}
 function renderRebirth(){const req=rebirthRequirements();$("rebirthEnergyReq").textContent=fmt(req.energy);$("rebirthCoinReq").textContent=fmt(req.coins);$("rebirthReward").textContent="+"+fmt(req.shards)+" ✧ Shards";const progress=Math.min(state.energy/req.energy,state.coins/req.coins,1);$("rebirthProgress").style.width=(progress*100)+"%";const ok=state.energy>=req.energy&&state.coins>=req.coins;$("rebirthButton").disabled=!ok;$("rebirthHint").textContent=ok?"Você está pronto. Seus Stands e descobertas serão preservados.":`Falta ${fmt(Math.max(0,req.energy-state.energy))} energia e ${fmt(Math.max(0,req.coins-state.coins))} moedas.`}
@@ -208,7 +208,18 @@ const BOSSES=[
 {id:"wonder",name:"Wonder of U",icon:"☂️",power:250000,energy:5000000,coins:750000,shards:4000,rebirth:6,desc:"A calamidade pune quem o persegue."},
 {id:"infinity",name:"Guardião do Infinito",icon:"🌀",power:1000000,energy:15000000,coins:2500000,shards:12000,rebirth:8,desc:"Uma anomalia que ameaça todos os universos."}
 ];
-function fightBoss(id){const b=BOSSES.find(x=>x.id===id);if(!b||state.rebirths<b.rebirth||state.energy<b.energy)return;const power=clickGain()*(1+state.rebirths*200)+state.totalSummons*.02;state.energy-=b.energy;if(power<b.power){state.coins+=Math.floor(b.coins*.15);toast("Você perdeu a luta, mas recebeu uma pequena recompensa de treino.")}else{state.coins+=b.coins;state.shards+=b.shards;state.bossWins[id]=(Number(state.bossWins[id])||0)+1;dropGear();unlockLore();toast("Vitória contra "+b.name+"! Recompensas recebidas.")}save();updateUI()}
+function renderBosses(){
+ const grid=$("bossGrid");if(!grid)return;
+ grid.innerHTML=BOSSES.map(b=>{
+  const rebirthLocked=Number(state.rebirths||0)<b.rebirth;
+  const energyLocked=Number(state.energy||0)<b.energy;
+  const locked=rebirthLocked||energyLocked;
+  const wins=Number(state.bossWins?.[b.id])||0;
+  const status=rebirthLocked?`Requer ${b.rebirth} Rebirth(s)`:energyLocked?`Requer ${fmt(b.energy)} energia`:`Custo: ${fmt(b.energy)} energia`;
+  return `<article class="card standcard ${locked?'locked':''}"><div class="standicon">${locked?'🔒':b.icon}</div><h3>${b.name}</h3><span class="tag">PODER ${fmt(b.power)} · VITÓRIAS ${wins}</span><p>${b.desc}</p><p>${status}</p><p>Recompensas: ${fmt(b.coins)} moedas · ${fmt(b.shards)} fragmentos</p><button data-boss="${b.id}" class="primary" ${locked?'disabled':''}>${rebirthLocked?'Bloqueado':energyLocked?'Energia insuficiente':'Desafiar chefe'}</button></article>`;
+ }).join('');
+}
+function fightBoss(id){const b=BOSSES.find(x=>x.id===id);if(!b)return;if(state.rebirths<b.rebirth){toast("Esse chefe exige "+b.rebirth+" Rebirth(s).");return}if(state.energy<b.energy){toast("Energia insuficiente. Você precisa de "+fmt(b.energy)+" energia.");return}const power=clickGain()*(1+state.rebirths*200)+state.totalSummons*.02;state.energy-=b.energy;if(power<b.power){state.coins+=Math.floor(b.coins*.15);toast("Você perdeu a luta, mas recebeu uma pequena recompensa de treino.")}else{state.coins+=b.coins;state.shards+=b.shards;state.bossWins[id]=(Number(state.bossWins[id])||0)+1;dropGear();unlockLore();toast("Vitória contra "+b.name+"! Recompensas recebidas.")}save();updateUI()}
 function renderEvolutions(){const sel=$("evolutionStand"),owned=Object.keys(state.inventory).filter(id=>state.inventory[id]>0&&stand(id));if(!sel)return;const current=sel.value;sel.innerHTML=owned.length?owned.map(s=>`<option value="${s.id}">${s.name} · Nv. ${Number(state.evolutions[s.id])||0}</option>`).join(""):'<option value="">Nenhum Stand no inventário</option>';if(owned.some(s=>s.id===current))sel.value=current;$("evolutionShards").textContent=fmt(state.shards);$("evolutionGrid").innerHTML=owned.length?owned.map(s=>{const lv=Number(state.evolutions[s.id])||0;return `<article class="card standcard"><div class="standicon">${s.icon}</div><h3>${s.name}</h3><span class="tag">EVOLUTION ${lv}/10</span><div class="progress"><div style="width:${lv*10}%"></div></div><p>Bônus passivo adicional: +${lv*25}%<br>Próximo custo: ${lv>=10?"MAX":fmt(100*Math.pow(2,lv))+" ✧"}</p></article>`}).join(""):'<div class="empty">Invoque um Stand para começar a evoluí-lo.</div>';const id=sel.value,lv=Number(state.evolutions[id])||0,cost=100*Math.pow(2,lv);$("evolveButton").disabled=!id||lv>=10||state.shards<cost;$("evolveButton").textContent=lv>=10?"NÍVEL MÁXIMO":"✨ Evoluir · "+fmt(cost)+" ✧";$("evolutionInfo").textContent=id?`${stand(id).name}: nível ${lv}/10. Cada nível aumenta seu bônus passivo em 25%.`:'Faça uma invocação para conseguir seu primeiro Stand.'}
 function evolveSelected(){const id=$("evolutionStand").value;if(!id||!stand(id))return;const lv=Number(state.evolutions[id])||0;if(lv>=10){toast("Esse Stand já está no nível máximo.");return}const cost=100*Math.pow(2,lv);if(state.shards<cost){toast("Fragmentos insuficientes.");return}state.shards-=cost;state.evolutions[id]=lv+1;save();updateUI();toast(stand(id).name+" evoluiu para o nível "+(lv+1)+"!")}
 
