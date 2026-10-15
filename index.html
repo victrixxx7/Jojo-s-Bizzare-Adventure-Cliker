@@ -377,9 +377,54 @@ function renderFusion(){let sel=$('fusionStand');if(!sel)return;let old=sel.valu
 function fuseStand(){let id=$('fusionStand').value;if(!id||+state.inventory[id]<3||(+state.standLevels[id]||1)>=20)return;state.inventory[id]-=2;state.standLevels[id]=(+state.standLevels[id]||1)+1;save();updateUI();toast(stand(id).name+' chegou ao nível '+state.standLevels[id]+'!')}
 function renderTower(){if(!$('towerFloor'))return;let f=+state.towerFloor||1;$('towerFloor').textContent=f;$('towerBest').textContent=state.towerBest||1;$('towerPower').textContent=fmt(Math.floor(10*Math.pow(1.32,f-1)));$('towerDesc').textContent=f%10===0?'GUARDIÃO DO ANDAR! Recompensas maiores.':f%5===0?'Modificador: inimigo acelerado.':'A cada 10 andares, um guardião.'}
 function fightTower(){let f=+state.towerFloor||1,need=Math.floor(10*Math.pow(1.32,f-1)),p=combatPower();if(p<need){$('towerResult').textContent=`Derrota. Poder ${fmt(p)}, recomendado ${fmt(need)}. Melhore sua build.`;return}let reward=Math.floor(100*f*(f%10===0?5:1));state.coins+=reward;state.shards+=Math.max(1,Math.floor(f/5));state.towerFloor=f+1;state.towerBest=Math.max(state.towerBest,state.towerFloor);if(f%10===0){state.shards+=100;dropGear()}unlockLore();save();updateUI();$('towerResult').textContent=`Vitória! +${fmt(reward)} moedas e fragmentos.`}
-function renderClan(){if(!$('clanTitle'))return;let c=state.clan||{name:'',level:0,xp:0};$('clanTitle').textContent=c.name||'Sem organização';$('clanLevel').textContent=c.level||0;$('clanXp').textContent=fmt(c.xp||0);$('clanInfo').textContent=c.name?'Organização local. XP coletiva salva neste navegador.':'Crie uma organização para começar.'}
-function createClan(){let n=$('clanName').value.trim();if(!n){toast('Digite um nome.');return}state.clan=state.clan||{level:0,xp:0};state.clan.name=n;state.clan.level=Math.max(1,+state.clan.level||1);save();updateUI();toast('Organização '+n+' criada!')}
-function clanMission(){if(!state.clan?.name){toast('Crie uma organização primeiro.');return}state.clan.xp=(+state.clan.xp||0)+100+state.discovered.length*10;let lv=Math.floor(state.clan.xp/500)+1;if(lv>(+state.clan.level||1)){state.clan.level=lv;state.shards+=50;toast('Organização nível '+lv+'! +50 fragmentos.')}else toast('Missão coletiva concluída!');state.coins+=1000;save();updateUI()}
+function renderClan(){
+ if(!$('clanTitle'))return;
+ if(!state.clan||typeof state.clan!=='object'||Array.isArray(state.clan))state.clan={name:'',level:0,xp:0,lastMissionAt:0};
+ const c=state.clan;
+ c.name=typeof c.name==='string'?c.name.trim():'';
+ c.level=c.name?Math.max(1,Number(c.level)||1):0;
+ c.xp=c.name?Math.max(0,Number(c.xp)||0):0;
+ c.lastMissionAt=Math.max(0,Number(c.lastMissionAt)||0);
+ $('clanTitle').textContent=c.name||'Sem organização';
+ $('clanLevel').textContent=c.level;
+ $('clanXp').textContent=fmt(c.xp);
+ const btn=$('clanMission');
+ const remaining=24*60*60*1000-(Date.now()-c.lastMissionAt);
+ btn.disabled=!c.name||remaining>0;
+ btn.textContent=!c.name?'Missão coletiva':remaining>0?'Missão concluída':'Missão coletiva';
+ $('clanInfo').textContent=!c.name?'Crie uma organização para começar.':remaining>0?'Missão concluída. A próxima fica disponível em '+Math.ceil(remaining/3600000)+' h.':'Organização local. Uma missão coletiva a cada 24 horas; progresso salvo neste navegador.';
+}
+function createClan(){
+ let n=$('clanName').value.trim();
+ if(!n){toast('Digite um nome.');return}
+ if(!state.clan||typeof state.clan!=='object'||Array.isArray(state.clan)||!state.clan.name){
+  state.clan={name:n,level:1,xp:0,lastMissionAt:0};
+ }else{
+  state.clan.name=n;
+  state.clan.level=Math.max(1,Number(state.clan.level)||1);
+  state.clan.xp=Math.max(0,Number(state.clan.xp)||0);
+  state.clan.lastMissionAt=Math.max(0,Number(state.clan.lastMissionAt)||0);
+ }
+ save();updateUI();toast('Organização '+n+' criada!');
+}
+function clanMission(){
+ const c=state.clan;
+ if(!c||typeof c!=='object'||Array.isArray(c)||typeof c.name!=='string'||!c.name.trim()){
+  if(!state.clan||typeof state.clan!=='object'||Array.isArray(state.clan))state.clan={name:'',level:0,xp:0,lastMissionAt:0};
+  renderClan();toast('Crie uma organização primeiro.');return;
+ }
+ const now=Date.now(), last=Math.max(0,Number(c.lastMissionAt)||0), cooldown=24*60*60*1000;
+ if(now-last<cooldown){renderClan();toast('Você já concluiu a missão de hoje.');return}
+ c.name=c.name.trim();
+ c.xp=Math.max(0,Number(c.xp)||0)+100+(Array.isArray(state.discovered)?state.discovered.length:0)*10;
+ const oldLevel=Math.max(1,Number(c.level)||1);
+ const newLevel=Math.max(oldLevel,Math.floor(c.xp/500)+1);
+ c.level=newLevel;c.lastMissionAt=now;
+ state.coins+=1000;
+ if(newLevel>oldLevel){state.shards+=50;toast('Organização nível '+newLevel+'! +1.000 moedas e +50 fragmentos.')}
+ else toast('Missão coletiva concluída! +1.000 moedas.');
+ save();updateUI();
+}
 function unlockLore(){for(let l of LORE)if(l[1]()&&!state.lore.includes(l[0]))state.lore.push(l[0])}
 function renderArchive(){if(!$('loreGrid'))return;unlockLore();$('loreCount').textContent=state.lore.length+' / '+LORE.length+' páginas';$('loreBar').style.width=(state.lore.length/LORE.length*100)+'%';$('loreGrid').innerHTML=LORE.map((l,i)=>{let got=state.lore.includes(l[0]);return `<article class="card lore-card ${got?'':'locked'}"><div class="eyebrow">PÁGINA ${i+1}</div><h3>${got?l[0]:'???'}</h3><p>${got?l[2]:'Continue jogando para revelar esta página.'}</p></article>`}).join('');$('achievementGrid').innerHTML=ACHIEVEMENTS.map(a=>{let ok=a[2]();return `<article class="card standcard"><div class="standicon">${ok?a[1]:'🔒'}</div><h3>${ok?a[0]:'Conquista oculta'}</h3><p>${a[3]}</p><span class="tag">${ok?'CONCLUÍDA':'EM PROGRESSO'}</span></article>`}).join('')}
 function renderCombat(){if(!$('combatBossGrid'))return;$('combatBossGrid').innerHTML=BOSSES.map(b=>{let lock=state.rebirths<b.rebirth;return `<article class="card standcard ${lock?'locked':''}"><div class="standicon">${lock?'🔒':b.icon}</div><h3>${lock?'Chefe bloqueado':b.name}</h3><span class="tag">PODER ${fmt(b.power)}</span><p>${lock?'Requer '+b.rebirth+' Rebirth(s)':b.desc}</p><button data-startboss="${b.id}" class="primary" ${lock?'disabled':''}>Iniciar combate</button></article>`}).join('')}
